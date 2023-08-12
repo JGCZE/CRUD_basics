@@ -3,6 +3,7 @@ import './App.css'
 import Axios from 'axios'
 
 import React from 'react'
+import { set } from 'date-fns'
 
 const App = () => {
   const [name, setName] = useState('')
@@ -10,6 +11,7 @@ const App = () => {
   const [country, setCountry] = useState('')
   const [position, setPosition] = useState('')
   const [wage, setWage] = useState(0)
+  const [employeeList, setEmployeeList] = useState([])
   
   const addEmployee = () => {
     Axios.post('http://localhost:3001/create', {
@@ -19,7 +21,22 @@ const App = () => {
       position: position,
       wage: wage
     }).then(() => {
-      console.log('Success')
+      setEmployeeList([
+        ...employeeList,
+        {
+          name: name,
+          age: age,
+          country: country,
+          position: position,
+          wage: wage
+        }
+      ])
+    })
+  }
+
+  const getEmployees = () => {
+    Axios.get('http://localhost:3001/employees').then((response) => {
+      setEmployeeList(response.data)
     })
   }
 
@@ -42,10 +59,22 @@ const App = () => {
         <input type="number" onChange={(e) => setWage(e.target.value)}/>
         <button onClick={addEmployee}>Add Employee</button>
       </div>
-      
 
-      <div>
-        <button>Show Employees</button>
+      <div className='employees'>
+        <button onClick={getEmployees}>Show Employees</button>
+
+        {employeeList.map( (val, key) => {
+          const {name, age, country, position, wage} = val
+          return (
+            <div key={key} className='employee'>
+               <h3>Name: {name}</h3>
+                <h3>Age: {age}</h3>
+                <h3>Country: {country}</h3>
+                <h3>Position: {position}</h3>
+                <h3>Salery: {wage}</h3>         
+            </div>
+          )
+        })}
       </div>
     </div>
   ) 
