@@ -12,7 +12,7 @@
   margin: 20px 0;
 }
 
-.information input {
+input {
   width: 200px;
   height: 30px;
   margin: 5px;
@@ -39,7 +39,7 @@ button {
 .employee {
   display: flex;
   width: 500px;
-  height: 100px;
+  height: 100%;
   border: 1px solid black;
   margin: 10px;
   font-size: 12px;

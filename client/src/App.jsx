@@ -12,10 +12,10 @@ const App = () => {
   const [position, setPosition] = useState('')
   const [wage, setWage] = useState(0)
   const [employeeList, setEmployeeList] = useState([])
+  const [newWage, setNewWage] = useState(0)
   
   const addEmployee = () => {
     Axios.post('http://localhost:3001/create', {
-      id: id,
       name: name,
       age: age,
       country: country,
@@ -25,7 +25,6 @@ const App = () => {
       setEmployeeList([
         ...employeeList,
         {
-          id: id,
           name: name,
           age: age,
           country: country,
@@ -42,16 +41,30 @@ const App = () => {
     })
   }
 
-  const deleteEmp = (id) => {
-    Axios.delete(`http://localhost:3001/delete/${id}`).then((response) => {
+  
+  const updateEmpWage = (id) => {
+    Axios.put('http://localhost:3001/update', {
+      id: id,
+      wage: newWage
+    }).then((response) => {
       setEmployeeList(
-        employeeList.filter((val) => {
-          return val.id !== id
+        employeeList.map(val => {
+          const {id, name, age, country, position, wage} = val
+          return val.id === id ? {id, name, age, country, position, wage: newWage} : val
         })
-      )
-    })
-  }
-
+        )
+      })
+    }
+    
+    const deleteEmp = (id) => {
+      Axios.delete(`http://localhost:3001/delete/${id}`).then((response) => {
+        setEmployeeList(
+          employeeList.filter((val) => {
+            return val.id !== id
+          })
+        )
+      })
+    }
 
   return (
     <div className='App'>
@@ -80,12 +93,19 @@ const App = () => {
           const {id, name, age, country, position, wage} = val
           return (
             <div key={key} className='employee'>
-               <h3>Name: {name}</h3>
-                <h3>Age: {age}</h3>
-                <h3>Country: {country}</h3>
-                <h3>Position: {position}</h3>
-                <h3>Salery: {wage}</h3>         
+              <div>
+                <h3>Name: {name}</h3>
+                  <h3>Age: {age}</h3>
+                  <h3>Country: {country}</h3>
+                  <h3>Position: {position}</h3>
+                  <h3>Salery: {wage}</h3> 
+              </div>
+
+              <div className=''>
+                <input type="text" placeholder='20000...' onChange={(e) => setNewWage(e.target.value)}/>
+                <button onClick={() => updateEmpWage(id)}>Update</button>
                 <button onClick={() => deleteEmp(id)}>Delete</button>
+              </div>        
             </div>
           )
         })}
