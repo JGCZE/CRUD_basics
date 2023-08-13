@@ -15,6 +15,7 @@ const App = () => {
   
   const addEmployee = () => {
     Axios.post('http://localhost:3001/create', {
+      id: id,
       name: name,
       age: age,
       country: country,
@@ -24,6 +25,7 @@ const App = () => {
       setEmployeeList([
         ...employeeList,
         {
+          id: id,
           name: name,
           age: age,
           country: country,
@@ -39,6 +41,17 @@ const App = () => {
       setEmployeeList(response.data)
     })
   }
+
+  const deleteEmp = (id) => {
+    Axios.delete(`http://localhost:3001/delete/${id}`).then((response) => {
+      setEmployeeList(
+        employeeList.filter((val) => {
+          return val.id !== id
+        })
+      )
+    })
+  }
+
 
   return (
     <div className='App'>
@@ -64,7 +77,7 @@ const App = () => {
         <button onClick={getEmployees}>Show Employees</button>
 
         {employeeList.map( (val, key) => {
-          const {name, age, country, position, wage} = val
+          const {id, name, age, country, position, wage} = val
           return (
             <div key={key} className='employee'>
                <h3>Name: {name}</h3>
@@ -72,6 +85,7 @@ const App = () => {
                 <h3>Country: {country}</h3>
                 <h3>Position: {position}</h3>
                 <h3>Salery: {wage}</h3>         
+                <button onClick={() => deleteEmp(id)}>Delete</button>
             </div>
           )
         })}
